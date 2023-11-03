@@ -4,6 +4,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import Swal from "sweetalert2";
 const AppContext = React.createContext();
+import { useNavigate } from "react-router-dom";
 
 function AppProvider({ children }) {
   const [user, setUser] = useState();
@@ -15,8 +16,6 @@ function AppProvider({ children }) {
         email: email,
         password: password,
       });
-
-      console.log(res);
 
       Swal.fire({
         icon: "success",

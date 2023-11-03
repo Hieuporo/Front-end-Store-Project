@@ -5,12 +5,24 @@ import OrderItem from "./OrderItem";
 
 const OrderTable = () => {
   const [orders, setOrders] = useState([]);
-  const { fetchOrder } = useAppContext();
 
   const getOrders = async () => {
     try {
-      const { data } = await axios.get("/api/order/getAllOrders");
+      var user = JSON.parse(window.sessionStorage.getItem("user"));
+      const { data } = await axios.get("https://localhost:7020/api/Order", {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
+
       setOrders(data);
+      const total = data.cartItems.reduce(
+        (totalPrice, cartItem) =>
+          totalPrice + cartItem.quantity * cartItem.productItem.price,
+        0
+      );
+
+      setTotalPrice(total);
     } catch (error) {
       console.log(error);
     }
@@ -18,7 +30,7 @@ const OrderTable = () => {
 
   useEffect(() => {
     getOrders();
-  }, [fetchOrder]);
+  }, []);
 
   return (
     <div className="checkout-right" style={{ marginBottom: "60px" }}>
@@ -27,7 +39,6 @@ const OrderTable = () => {
           <tr>
             <th>SL No.</th>
             <th>Product</th>
-            <th>Created At</th>
             <th>Price</th>
             <th>Shipping</th>
             <th>Status</th>
