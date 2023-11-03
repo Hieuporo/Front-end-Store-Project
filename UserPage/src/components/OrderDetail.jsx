@@ -9,8 +9,6 @@ const OrderDetail = () => {
   const [shippingMethods, setShippingMethods] = useState([]);
   const [customerName, setCustomerName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [cartItemIdlist, setCartItemIdlist] = useState([]);
-  const { fetchCart, setFetchCart } = useAppContext();
 
   const getShippingMethod = async () => {
     try {
@@ -24,30 +22,8 @@ const OrderDetail = () => {
     }
   };
 
-  const getcart = async () => {
-    try {
-      var user = JSON.parse(window.sessionStorage.getItem("user"));
-      const { data } = await axios.get("https://localhost:7020/api/Cart", {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      });
-
-      const cartItemIds = data.cartItems.map((cartItem) => cartItem.id);
-      setCartItemIdlist(cartItemIds);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const createOrder = async () => {
-    if (
-      !address &&
-      !shipingMethod &&
-      !customerName &&
-      !phoneNumber &&
-      !cartItemIdlist
-    ) {
+    if (!address && !shipingMethod && !customerName && !phoneNumber) {
       return Swal.fire({
         icon: "error",
         title: "Please fill information",
@@ -56,12 +32,22 @@ const OrderDetail = () => {
       });
     }
     try {
+      var user = JSON.parse(window.sessionStorage.getItem("user"));
+
+      const { data } = await axios.get("https://localhost:7020/api/Cart", {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
+
+      const cartItemIdlist = data.cartItems.map((cartItem) => cartItem.id);
+
       const config = {
         headers: {
           Authorization: `Bearer ${user.token}`,
         },
       };
-      await axios.post(
+      const res = await axios.post(
         "https://localhost:7020/api/Order",
         {
           createOrderDto: {
@@ -73,17 +59,18 @@ const OrderDetail = () => {
             cartItemIdlist,
           },
           stripeSetupDto: {
-            approvedUrl: "http://localhost:5173",
+            approvedUrl: "http://localhost:5173/orderSuccess/",
             cancelUrl: "http://localhost:5173",
           },
         },
         config
       );
+
+      window.location.replace(res.data);
+
       setCustomerName("");
       setPhoneNumber("");
       setAddress("");
-      setCartItemIdlist("");
-      setFetchCart(!fetchCart);
     } catch (error) {
       console.log(error);
     }
@@ -95,7 +82,6 @@ const OrderDetail = () => {
 
   useEffect(() => {
     getShippingMethod();
-    getcart();
   }, []);
 
   return (
@@ -104,7 +90,7 @@ const OrderDetail = () => {
         <h4 style={{ marginLeft: "112px", fontSize: "17px" }}>
           Add a new Details
         </h4>
-        <form className="creditly-card-form agileinfo_form">
+        <div className="creditly-card-form agileinfo_form">
           <section className="creditly-wrapper wrapper">
             <div className="information-wrapper">
               <div className="first-row form-group">
@@ -135,12 +121,10 @@ const OrderDetail = () => {
                     }}
                     onChange={handleChangeShippingMethod}
                   >
-                    <option value="" disabled>
-                      Select an option
-                    </option>
+                    <option value="">-- Select Shipping Method --</option>
                     {shippingMethods.map((shipingMethod) => {
                       return (
-                        <option value={shipingMethod.id}>
+                        <option value={shipingMethod.id} key={shipingMethod.id}>
                           {shipingMethod.name}
                         </option>
                       );
@@ -173,11 +157,11 @@ const OrderDetail = () => {
                 style={{ marginBottom: "20px" }}
                 onClick={createOrder}
               >
-                Delivery to this Address
+                Create Order
               </button>
             </div>
           </section>
-        </form>
+        </div>
       </div>
       <div className="clearfix"> </div>
       <div className="clearfix" />

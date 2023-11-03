@@ -21,6 +21,7 @@ import Checkout from "./pages/Checkout";
 import Product from "./pages/Product";
 import Order from "./pages/Order";
 import { useEffect } from "react";
+import OrderSuccess from "./pages/OrderSuccess";
 
 const Layout = () => {
   const location = useLocation();
@@ -71,6 +72,10 @@ const router = createBrowserRouter([
       {
         path: "/order",
         element: <Order />,
+      },
+      {
+        path: "/orderSuccess/:id",
+        element: <OrderSuccess />,
       },
     ],
   },

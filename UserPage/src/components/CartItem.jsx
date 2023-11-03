@@ -106,9 +106,8 @@ const CartItem = ({ cart, index }) => {
 };
 
 CartItem.propTypes = {
-  product: PropTypes.object.isRequired,
+  cart: PropTypes.object.isRequired,
   index: PropTypes.number.isRequired,
-  setTotalPrice: PropTypes.func.isRequired,
 };
 
 export default CartItem;

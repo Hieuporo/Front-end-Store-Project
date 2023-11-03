@@ -17,10 +17,7 @@ const ProductCart = () => {
         },
       });
 
-      if (data.Items.length > 0) {
-        setCart(data.cartItems);
-      }
-
+      setCart(data.cartItems);
       const total = data.cartItems.reduce(
         (totalPrice, cartItem) =>
           totalPrice + cartItem.quantity * cartItem.productItem.price,
@@ -54,9 +51,10 @@ const ProductCart = () => {
           </tr>
         </thead>
         <tbody>
-          {cart.map((cart, index) => (
-            <CartItem key={index} cart={cart} index={index} />
-          ))}
+          {cart.length > 0 &&
+            cart.map((cart, index) => (
+              <CartItem key={index} cart={cart} index={index} />
+            ))}
           <tr className="rem1">
             <td className="invert">Total</td>
             <td className="invert-image"></td>

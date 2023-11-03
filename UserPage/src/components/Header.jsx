@@ -12,8 +12,11 @@ const Header = () => {
     <nav>
       <ul>
         <li className="primary-nav">
-          <img src="./src/images/img-DS.png" alt="logo" />
-          <Link to="/">DOWNY SHOES</Link>
+          <img
+            src="https://ibrand.vn/wp-content/uploads/2022/10/logo-shop-giay-4.jpg"
+            alt="logo"
+          />
+          <Link to="/">Honkai Impact</Link>
         </li>
         <li className="secondary-nav">
           <Link to="/products">PRODUCT</Link>
